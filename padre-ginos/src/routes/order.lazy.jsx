@@ -1,30 +1,37 @@
-import Pizza from "./Pizza";
-import { useEffect, useState, useContext } from "react";
-import { CartContext } from "./contexts";
-import Cart from "./Cart";
+import { useState, useEffect, useContext } from "react";
+import { createLazyFileRoute } from "@tanstack/react-router";
+import { CartContext } from "../contexts";
+import Cart from "../Cart";
+import Pizza from "../Pizza";
 
+// feel free to change en-US / USD to your locale
 const intl = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
 
-export default function Order() {
-  //   const pizzaType = "pepperoni";
-  //   const pizzaSize = "M";
-  const [pizzaTypes, setPizzaTypes] = useState([]);
+export const Route = createLazyFileRoute("/order")({
+  component: Order,
+});
+
+function Order() {
   const [pizzaType, setPizzaType] = useState("pepperoni");
   const [pizzaSize, setPizzaSize] = useState("M");
-  const [cart, setCart] = useContext(CartContext);
+  const [pizzaTypes, setPizzaTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useContext(CartContext);
 
   async function checkout() {
     setLoading(true);
+
     await fetch("/api/order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ cart }),
+      body: JSON.stringify({
+        cart,
+      }),
     });
 
     setCart([]);
@@ -34,19 +41,21 @@ export default function Order() {
   let price, selectedPizza;
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
-    price = intl.format(selectedPizza.sizes[pizzaSize]);
-  }
-
-  async function fetchPizzaTypes() {
-    const pizzaRes = await fetch("/api/pizzas");
-    const pizzaJson = await pizzaRes.json();
-    setPizzaTypes(pizzaJson);
-    setLoading(false);
+    price = intl.format(
+      selectedPizza.sizes ? selectedPizza.sizes[pizzaSize] : "",
+    );
   }
 
   useEffect(() => {
     fetchPizzaTypes();
   }, []);
+
+  async function fetchPizzaTypes() {
+    const pizzasRes = await fetch("/api/pizzas");
+    const pizzasJson = await pizzasRes.json();
+    setPizzaTypes(pizzasJson);
+    setLoading(false);
+  }
 
   return (
     <div className="order-page">
@@ -65,7 +74,7 @@ export default function Order() {
             <div>
               <label htmlFor="pizza-type">Pizza Type</label>
               <select
-                onChange={(event) => setPizzaType(event.target.value)}
+                onChange={(e) => setPizzaType(e.target.value)}
                 name="pizza-type"
                 value={pizzaType}
               >
@@ -81,34 +90,34 @@ export default function Order() {
               <div>
                 <span>
                   <input
+                    onChange={(e) => setPizzaSize(e.target.value)}
                     checked={pizzaSize === "S"}
                     type="radio"
                     name="pizza-size"
                     value="S"
                     id="pizza-s"
-                    onChange={(event) => setPizzaSize(event.target.value)}
                   />
                   <label htmlFor="pizza-s">Small</label>
                 </span>
                 <span>
                   <input
+                    onChange={(e) => setPizzaSize(e.target.value)}
                     checked={pizzaSize === "M"}
                     type="radio"
                     name="pizza-size"
                     value="M"
                     id="pizza-m"
-                    onChange={(event) => setPizzaSize(event.target.value)}
                   />
                   <label htmlFor="pizza-m">Medium</label>
                 </span>
                 <span>
                   <input
+                    onChange={(e) => setPizzaSize(e.target.value)}
                     checked={pizzaSize === "L"}
                     type="radio"
                     name="pizza-size"
                     value="L"
                     id="pizza-l"
-                    onChange={(event) => setPizzaSize(event.target.value)}
                   />
                   <label htmlFor="pizza-l">Large</label>
                 </span>
@@ -117,7 +126,7 @@ export default function Order() {
             <button type="submit">Add to Cart</button>
           </div>
           {loading ? (
-            <h3>Loading...</h3>
+            <h3>LOADING …</h3>
           ) : (
             <div className="order-pizza">
               <Pizza
@@ -130,11 +139,7 @@ export default function Order() {
           )}
         </form>
       </div>
-      {loading ? (
-        <h2>LOADING ...</h2>
-      ) : (
-        <Cart checkout={checkout} cart={cart} />
-      )}
+      {loading ? <h2>LOADING …</h2> : <Cart checkout={checkout} cart={cart} />}
     </div>
   );
 }
