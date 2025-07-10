@@ -4,7 +4,7 @@ export default function Order() {
   const pizzaType = "pepperoni";
   const pizzaSize = "M";
   return (
-    <div className="orders">
+    <div className="order">
       <h2>Create Order</h2>
       <form>
         <div>
@@ -13,9 +13,9 @@ export default function Order() {
             <select name="pizza-type" value={pizzaType}>
               <option value="pepperoni">The Pepperoni Pizza</option>
               <option value="hawaiian">The Hawaiian Pizza</option>
-              <option value="big-meat">The Big Meat Pizza</option>
+              <option value="big_meat">The Big Meat Pizza</option>
             </select>
-          </div>{" "}
+          </div>
           <div>
             <label htmlFor="pizza-size">Pizza Size</label>
             <div>
@@ -26,7 +26,7 @@ export default function Order() {
                   name="pizza-size"
                   value="S"
                   id="pizza-s"
-                ></input>
+                />
                 <label htmlFor="pizza-s">Small</label>
               </span>
               <span>
@@ -36,7 +36,7 @@ export default function Order() {
                   name="pizza-size"
                   value="M"
                   id="pizza-m"
-                ></input>
+                />
                 <label htmlFor="pizza-m">Medium</label>
               </span>
               <span>
@@ -46,7 +46,7 @@ export default function Order() {
                   name="pizza-size"
                   value="L"
                   id="pizza-l"
-                ></input>
+                />
                 <label htmlFor="pizza-l">Large</label>
               </span>
             </div>
