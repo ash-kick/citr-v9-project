@@ -1,16 +1,14 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import Order from "./Orders";
-import PizzaOfTheDay from "./PizzaOfTheDay";
+import { CartContext } from "./contexts";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
 
 const App = () => {
+  const cartHook = useState([]);
   return (
     <StrictMode>
-      <div>
-        <h1>Padre Gino's - Order Now</h1>
-        <Order />
-        <PizzaOfTheDay />
-      </div>
+      <RouterProvider router={router} />
     </StrictMode>
   );
 };
