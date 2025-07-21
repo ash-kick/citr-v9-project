@@ -1,13 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { CartContext } from "./contexts";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 
+const router = createRouter({ routeTree });
+const queryClient = new QueryClient();
+
 const App = () => {
-  const cartHook = useState([]);
   return (
     <StrictMode>
+      <QueryClientProvider client={queryClient} />
       <RouterProvider router={router} />
     </StrictMode>
   );
